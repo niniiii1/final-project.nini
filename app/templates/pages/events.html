@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Rock Music Hub | Events{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+      <h1 class="h3">Concerts & News</h1>
+      <p class="text-muted">Stay on top of upcoming concerts, showcases, and rock news.</p>
+    </div>
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-sm-5">
+        {{ form.city.label(class="form-label") }}
+        {{ form.city(class="form-control") }}
+      </div>
+      <div class="col-sm-5">
+        {{ form.after_date.label(class="form-label") }}
+        {{ form.after_date(class="form-control") }}
+      </div>
+      <div class="col-sm-2">
+        {{ form.submit(class="btn btn-primary w-100") }}
+      </div>
+    </form>
+  </div>
+
+  <div class="row g-4">
+    {% for event in events %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ event.title }}</h5>
+          <p class="card-text text-muted mb-1">{{ event.venue }} · {{ event.city }}</p>
+          <p class="card-text text-muted">{{ event.event_date.strftime('%b %d, %Y') }}</p>
+          <p class="card-text small">{{ event.description[:140] }}...</p>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('public.event_detail', event_id=event.id) }}">More info</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No events found for your filters.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

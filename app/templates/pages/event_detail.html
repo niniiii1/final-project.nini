@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} | Rock Music Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <h1 class="h3">{{ event.title }}</h1>
+      <p class="text-muted">{{ event.venue }} · {{ event.city }} · {{ event.event_date.strftime('%b %d, %Y') }}</p>
+      <p>{{ event.description }}</p>
+      {% if event.link_url %}
+      <a class="btn btn-outline-primary" href="{{ event.link_url }}" target="_blank" rel="noopener">Event website</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <section class="mt-5">
+    <h2 class="h4">Community Comments</h2>
+    <div class="card mb-4">
+      <div class="card-body">
+        <form method="post">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.body.label(class="form-label") }}
+            {{ form.body(class="form-control", rows=3) }}
+            {% for error in form.body.errors %}
+              <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
+    </div>
+
+    {% for comment in comments %}
+    <div class="border rounded p-3 mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <strong>{{ comment.user.username }}</strong>
+        <small class="text-muted">{{ comment.created_at.strftime('%b %d, %Y') }}</small>
+      </div>
+      <p class="mb-0">{{ comment.body }}</p>
+    </div>
+    {% else %}
+    <p class="text-muted">No comments yet. Start the conversation.</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

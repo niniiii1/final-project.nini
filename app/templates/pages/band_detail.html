@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ band.name }} | Rock Music Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <div class="col-lg-5">
+      {% if band.image_url %}
+      <img src="{{ band.image_url }}" class="img-fluid rounded shadow-sm" alt="{{ band.name }}">
+      {% endif %}
+    </div>
+    <div class="col-lg-7">
+      <h1 class="h3">{{ band.name }}</h1>
+      <p class="text-muted">{{ band.country }} · Formed {{ band.formed_year }}</p>
+      <p>{{ band.description }}</p>
+      {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('user.toggle_favorite_band', band_id=band.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline-primary" type="submit">
+            {% if is_favorite %}Remove from favorites{% else %}Add to favorites{% endif %}
+          </button>
+        </form>
+      {% else %}
+        <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Log in to favorite</a>
+      {% endif %}
+
+      <hr>
+      <h4 class="h5">Albums</h4>
+      <ul class="list-group list-group-flush">
+        {% for album in band.albums %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>{{ album.title }} ({{ album.release_year }})</span>
+          <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('public.album_detail', album_id=album.id) }}">View</a>
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No albums listed yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <section class="mt-5">
+    <h2 class="h4">Community Comments</h2>
+    <div class="card mb-4">
+      <div class="card-body">
+        <form method="post">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.body.label(class="form-label") }}
+            {{ form.body(class="form-control", rows=3) }}
+            {% for error in form.body.errors %}
+              <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
+    </div>
+
+    {% for comment in comments %}
+    <div class="border rounded p-3 mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <strong>{{ comment.user.username }}</strong>
+        <small class="text-muted">{{ comment.created_at.strftime('%b %d, %Y') }}</small>
+      </div>
+      <p class="mb-0">{{ comment.body }}</p>
+    </div>
+    {% else %}
+    <p class="text-muted">No comments yet. Be the first to share your thoughts.</p>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

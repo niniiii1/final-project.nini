@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile | Rock Music Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h5">Profile</h2>
+          <form method="post">
+            {{ profile_form.hidden_tag() }}
+            <div class="mb-3">
+              {{ profile_form.username.label(class="form-label") }}
+              {{ profile_form.username(class="form-control") }}
+              {% for error in profile_form.username.errors %}
+              <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {{ profile_form.update_submit(class="btn btn-primary w-100") }}
+          </form>
+          <hr>
+          <h3 class="h6">Account</h3>
+          <p class="small text-muted mb-1">Email: {{ current_user.email }}</p>
+          <p class="small text-muted mb-0">Member since {{ current_user.created_at.strftime('%b %d, %Y') }}</p>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mt-4">
+        <div class="card-body">
+          <h2 class="h5">Create Playlist</h2>
+          <form method="post">
+            {{ playlist_form.hidden_tag() }}
+            <div class="mb-3">
+              {{ playlist_form.name.label(class="form-label") }}
+              {{ playlist_form.name(class="form-control") }}
+              {% for error in playlist_form.name.errors %}
+              <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {{ playlist_form.create_submit(class="btn btn-dark w-100") }}
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5">Favorites</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <h3 class="h6">Bands</h3>
+              <ul class="list-group list-group-flush">
+                {% for band in favorite_bands %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>{{ band.name }}</span>
+                  <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('public.band_detail', band_id=band.id) }}">View</a>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">No favorite bands yet.</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3 class="h6">Albums</h3>
+              <ul class="list-group list-group-flush">
+                {% for album in favorite_albums %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>{{ album.title }}</span>
+                  <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('public.album_detail', album_id=album.id) }}">View</a>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">No favorite albums yet.</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h5">Playlists</h2>
+          {% for playlist in playlists %}
+          <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>{{ playlist.name }}</strong>
+              <form method="post" action="{{ url_for('user.delete_playlist', playlist_id=playlist.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </div>
+            <ul class="list-group list-group-flush">
+              {% for item in playlist.items|sort(attribute='position') %}
+              <li class="list-group-item">
+                {% if item.album %}
+                  {{ item.position }}. {{ item.album.title }}
+                {% else %}
+                  {{ item.position }}. {{ item.track_name or 'Untitled track' }}
+                {% endif %}
+              </li>
+              {% else %}
+              <li class="list-group-item text-muted">No items yet.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% else %}
+          <p class="text-muted">No playlists created yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h5">My Comments</h2>
+          {% for comment in comments %}
+          <div class="border rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">{{ comment.target_type|capitalize }} · {{ comment.created_at.strftime('%b %d, %Y') }}</small>
+              <form method="post" action="{{ url_for('user.delete_comment', comment_id=comment.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </div>
+            <p class="mb-0">{{ comment.body }}</p>
+          </div>
+          {% else %}
+          <p class="text-muted">You haven't posted any comments yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

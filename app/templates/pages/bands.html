@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Rock Music Hub | Bands{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+    <div>
+      <h1 class="h3">Bands</h1>
+      <p class="text-muted">Browse legendary performers, modern icons, and rising rock bands.</p>
+    </div>
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-sm-5">
+        {{ form.query.label(class="form-label") }}
+        {{ form.query(class="form-control") }}
+      </div>
+      <div class="col-sm-5">
+        {{ form.country.label(class="form-label") }}
+        {{ form.country(class="form-control") }}
+      </div>
+      <div class="col-sm-2">
+        {{ form.submit(class="btn btn-primary w-100") }}
+      </div>
+    </form>
+  </div>
+
+  <div class="row g-4">
+    {% for band in bands %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 shadow-sm">
+        {% if band.image_url %}
+        <img src="{{ band.image_url }}" class="card-img-top" alt="{{ band.name }}">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ band.name }}</h5>
+          <p class="card-text text-muted mb-2">{{ band.country }} · Formed {{ band.formed_year }}</p>
+          <p class="card-text small">{{ band.description[:140] }}...</p>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('public.band_detail', band_id=band.id) }}">View profile</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No bands matched your filters.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

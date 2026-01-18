@@ -1,0 +1,56 @@
+body {
+  background-color: #f8f9fb;
+  color: #222;
+}
+
+.hero-section {
+  background: linear-gradient(120deg, #1f1f1f, #2c3e50);
+  padding: 4rem 0;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+}
+
+.page-header {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+.section-card {
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.card img {
+  object-fit: cover;
+  height: 180px;
+}
+
+.card.shadow-sm {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.shadow-sm:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12);
+}
+
+form .form-control,
+form .form-select {
+  border-radius: 0.75rem;
+}
+
+button,
+.btn {
+  border-radius: 999px;
+}
+
+footer img {
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 4px;
+}
